@@ -50,13 +50,36 @@ export class PolymarketClient {
 
     try {
       const { ClobClient } = await import('@polymarket/clob-client');
-      const creds = CONFIG.polymarket.apiKey
+
+      // First create a client without creds to derive API keys if needed
+      let creds = CONFIG.polymarket.apiKey
         ? {
             key: CONFIG.polymarket.apiKey,
             secret: CONFIG.polymarket.apiSecret,
             passphrase: CONFIG.polymarket.apiPassphrase,
           }
         : undefined;
+
+      if (!creds) {
+        // Derive API keys from the private key
+        logger.info('No API credentials configured, deriving from private key...');
+        const tempClient = new ClobClient(
+          CONFIG.polymarket.clobBaseUrl,
+          CONFIG.polymarket.chainId as number,
+          this.wallet!,
+        );
+
+        try {
+          creds = await (tempClient as any).deriveApiKey();
+          logger.info('Derived API key successfully');
+        } catch {
+          // If derive fails, try to create a new one
+          logger.info('Derive failed, creating new API key...');
+          creds = await (tempClient as any).createApiKey();
+          logger.info('Created new API key successfully');
+        }
+      }
+
       this.clobClient = new ClobClient(
         CONFIG.polymarket.clobBaseUrl,
         CONFIG.polymarket.chainId as number,
