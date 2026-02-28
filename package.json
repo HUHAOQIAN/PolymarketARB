@@ -1,0 +1,33 @@
+{
+  "name": "polymarket-weather-arb",
+  "version": "1.0.0",
+  "description": "Automated weather arbitrage bot for Polymarket using NOAA forecast data",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node dist/index.js",
+    "dry-run": "DRY_RUN=true tsc && node dist/index.js",
+    "backtest": "tsc && node dist/backtest.js",
+    "dev": "ts-node src/index.ts",
+    "lint": "eslint src/**/*.ts",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@polymarket/clob-client": "^4.1.0",
+    "axios": "^1.7.0",
+    "cron": "^3.1.0",
+    "dotenv": "^16.4.0",
+    "ethers": "^5.7.2",
+    "mathjs": "^13.0.0",
+    "winston": "^3.14.0"
+  },
+  "devDependencies": {
+    "@types/cron": "^2.4.0",
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
